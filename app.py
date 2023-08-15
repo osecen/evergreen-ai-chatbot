@@ -12,7 +12,7 @@ from scrap import generate_scraped_text, domain
 import qdrant_client
 from scrap import get_text_chunks
 import os
-from langchain.vectorstores import Qdrant
+from langchain.vectorstores import Qdrant, Pinecone
 
 
 def get_pdf_text(pdf_docs):
@@ -86,8 +86,8 @@ def handle_userinput(user_question):
 
 def main():
     load_dotenv()
-    st.set_page_config(page_title="Chat with multiple PDFs",
-                       page_icon=":books:")
+    st.set_page_config(page_title="Welcome to Flex",
+                       page_icon="Evergreen AI Chatbot.png")
     st.write(css, unsafe_allow_html=True)
 
     print("stage 1")
@@ -96,9 +96,10 @@ def main():
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
 
-    st.header("Chat with multiple PDFs :books:")
-    user_question = st.text_input("Ask a question about your documents. You have to upload a document before you can "
-                                  "ask the question.")
+    st.image('Evergreen AI Chatbot.png', width=300)  # Set width to 300 pixels
+    st.header("Ask Evergreen your questions about Flex...")
+
+    user_question = st.text_input("")
 
 
     print("stage 5")

@@ -13,12 +13,13 @@ import os
 import pandas as pd
 import qdrant_client
 from dotenv import load_dotenv
-from langchain.vectorstores import Qdrant
+from langchain.vectorstores import Qdrant, Pinecone
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
 import math
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+import pinecone
 
 # import tiktoken
 # import openai
@@ -349,12 +350,24 @@ def create_qdrant_doc():
         os.getenv("QDRANT_HOST"),
         api_key=os.getenv("QDRANT_API_KEY")
     )
+
+        # initialize pinecone
+    pinecone.init(
+        api_key=os.getenv("PINECONE_API_KEY"),  # find at app.pinecone.io
+        environment=os.getenv("PINECONE_ENV"),  # next to api key in console
+    )
+
+    pinecone_index = os.getenv("PINECONE_COLLECTION_NAME")
+
     embeddings = OpenAIEmbeddings()
     vector_store = Qdrant(
         client=client,
         collection_name=os.getenv("QDRANT_COLLECTION_NAME"),
         embeddings=embeddings,
     )
+    index = pinecone.Index(pinecone_index)
+    vectorstore_pinecone = Pinecone(index, embeddings.embed_query, "text")
+
     # add documents to the vector store
     chunks = get_text_chunks(generate_scraped_text())
     print(f"chunks len before: {len(chunks)}")
@@ -383,6 +396,9 @@ def create_qdrant_doc():
         # split_chunks.append(chunks[i:i+chunk_size])
         print(i)
         vector_store.add_texts(chunks[i:i+chunk_size])
+        # vectorstore_pinecone.add_texts(chunks[i:i+chunk_size])
+
+
 
 # crawl(full_url)
 # create_vector_collection()

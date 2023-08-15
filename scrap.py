@@ -385,5 +385,5 @@ def create_qdrant_doc():
         vector_store.add_texts(chunks[i:i+chunk_size])
 
 # crawl(full_url)
-create_vector_collection()
-create_qdrant_doc()
+# create_vector_collection()
+# create_qdrant_doc()
